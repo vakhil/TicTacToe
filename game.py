@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 
 
@@ -12,7 +13,7 @@ class TicTacToe:
         button_frame = tk.Frame(master)
         button_frame.grid(row=0, column=0, padx=10, pady=10)
 
-        self.info_label = tk.Label(master, text="Player 1's Turn", bg="grey", fg="white", font=("Helvetica", 14))
+        self.info_label = tk.Label(master, text="Player 1's Turn", bg="blue", fg="white", font=("Helvetica", 14))
         self.info_label.grid(row=0, column=1, columnspan=3, sticky="ew")
 
 
@@ -28,13 +29,16 @@ class TicTacToe:
             self.buttons.append(button_row)
 
     def on_button_click(self,row,col):
-        button = self.master.grid_slaves(row=row, column=col)[0]
+        button = self.buttons[row][col]
         self.sign_list[row][col] = self.turn
+        print(button["text"])
         if button["text"] != "X" :
             if self.turn == 0 : 
                 button["text"] = "X"
+                self.info_label.config(text="Player 2's Turn")  
             else :  
                 button["text"] = "O"
+                self.info_label.config(text="Player 1's Turn")  
         self.turn = 1 - self.turn
         self.check_game_completion()
 
@@ -48,9 +52,20 @@ class TicTacToe:
         for game_complete in game_completed_list :
             s = set()
             for row,col in game_complete : 
-                 s.add(self.master.grid_slaves(row=row, column=col)[0]["text"])
+                 button = self.buttons[row][col]
+                 print(button["text"])
+                 s.add(button["text"])
             if len(s) == 1 and ( 'X' or 'O' in s):
+                player_name = ""
+                if self.turn == 0 : 
+                    player_name = "Player 1"
+                else : 
+                    player_name = "Player 2"
+
+                messagebox.showinfo(player_name + " has won the game")
                 print("Game Completed Dear") 
+
+    # Write code for reseting the board !!!
         
         
 
