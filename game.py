@@ -28,10 +28,22 @@ class TicTacToe:
                 id += 1
             self.buttons.append(button_row)
 
+
+    def reset_board(self):
+            index = 1
+            for button_row in self.buttons : 
+                for button in button_row : 
+                    button.config(text =f"Box {index}") 
+                    index +=1
+            self.turn = 0
+            self.info_label.config(text="Player 1's turn")
+            self.top.destroy()
+
+    
+
     def on_button_click(self,row,col):
         button = self.buttons[row][col]
         self.sign_list[row][col] = self.turn
-        print(button["text"])
         if button["text"] != "X" :
             if self.turn == 0 : 
                 button["text"] = "X"
@@ -43,6 +55,12 @@ class TicTacToe:
         self.check_game_completion()
 
         print("This row has been clicked " + str(row) + " and this is the column " + str(col))
+
+    def display_pop_up(self, player_name):
+        self.top = tk.Toplevel(self.master)
+        # top.geometry("300X200")
+        tk.Label(self.top,text=player_name + " has won the game").pack()
+        tk.Button(self.top,text="Try Again",command=self.reset_board).pack()
 
     def check_game_completion(self):
         game_completed_list = [[(0,0),(0,1),(0,2)],[(0,0),(1,0),(2,0)],[(1,0),(1,1),(1,2)],
@@ -58,14 +76,21 @@ class TicTacToe:
             if len(s) == 1 and ( 'X' or 'O' in s):
                 player_name = ""
                 if self.turn == 0 : 
-                    player_name = "Player 1"
-                else : 
                     player_name = "Player 2"
+                else : 
+                    player_name = "Player 1"
 
-                messagebox.showinfo(player_name + " has won the game")
+                self.display_pop_up(player_name)
                 print("Game Completed Dear") 
 
+
+
+
+
+
+
     # Write code for reseting the board !!!
+
         
         
 
