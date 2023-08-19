@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-
+from PIL import Image , ImageTk
 
 
 class TicTacToe:
@@ -9,9 +9,10 @@ class TicTacToe:
         self.sign_list = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]]
         self.master = master
         self.buttons = []
+        self.onButtonClickedFirstTime = True
         
-        button_frame = tk.Frame(master)
-        button_frame.grid(row=0, column=0, padx=10, pady=10)
+        self.button_frame = tk.Frame(master)
+        self.button_frame.grid(row=0, column=0, padx=10, pady=10)
 
         self.info_label = tk.Label(master, text="Player 1's Turn", bg="blue", fg="white", font=("Helvetica", 14))
         self.info_label.grid(row=0, column=1, columnspan=3, sticky="ew")
@@ -19,14 +20,21 @@ class TicTacToe:
 
         id = 1
 
+
+
         for row in range(3):
             button_row = []
             for col in range(3):
-                button = tk.Button(button_frame, text=f"Box {id}", width=12, height=10, command=lambda row=row, col=col: self.on_button_click(row, col))
+                button = tk.Button(self.button_frame,image="", text=f"Box {id}", width=12, height=10, command=lambda row=row, col=col: self.on_button_click(row, col))
                 button.grid(row=row, column=col)
                 button_row.append(button)
                 id += 1
             self.buttons.append(button_row)
+
+    def resizeImage(self,turn):
+        original_image = Image.open('./images/' + turn + '.png')
+        resized_image = original_image.resize((12, 10))  # Replace with your desired dimensions
+        self.resized_photo = ImageTk.PhotoImage(resized_image)
 
 
     def reset_board(self):
@@ -43,14 +51,27 @@ class TicTacToe:
 
     def on_button_click(self,row,col):
         button = self.buttons[row][col]
+        if self.onButtonClickedFirstTime:
+            for button_rows in self.buttons :
+                for actual_button in button_rows:
+                    button = tk.Button(self.button_frame,image=self.resizeImage('X'), width=250, height=250, command=lambda row=row, col=col: self.on_button_click(row, col))
+                    actual_button = button
+            #         actual_button.config(image=self.resizeImage('X'))
+                    
+            #         actual_button.config(width=250, height=250)
+            self.onButtonClickedFirstTime = False
+        
         self.sign_list[row][col] = self.turn
         if button["text"] != "X" :
             if self.turn == 0 : 
                 button["text"] = "X"
+                button.config(image=self.resizeImage('X'))
                 self.info_label.config(text="Player 2's Turn")  
             else :  
                 button["text"] = "O"
                 self.info_label.config(text="Player 1's Turn")  
+                button.config(image=self.resizeImage('O'))
+
         self.turn = 1 - self.turn
         self.check_game_completion()
 
