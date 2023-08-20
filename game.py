@@ -25,15 +25,19 @@ class TicTacToe:
         for row in range(3):
             button_row = []
             for col in range(3):
-                button = tk.Button(self.button_frame,image="", text=f"Box {id}", width=12, height=10, command=lambda row=row, col=col: self.on_button_click(row, col))
+                button = tk.Button(self.button_frame,image=self.resizeImage(None), text=f"Box {id}", width=250, height=250, command=lambda row=row, col=col: self.on_button_click(row, col))
                 button.grid(row=row, column=col)
                 button_row.append(button)
                 id += 1
             self.buttons.append(button_row)
 
     def resizeImage(self,turn):
-        original_image = Image.open('./images/' + turn + '.png')
-        resized_image = original_image.resize((12, 10))  # Replace with your desired dimensions
+        original_image = None
+        if turn is None :
+            original_image = Image.new("RGBA", (250, 250), (0, 0, 0, 0))
+        else : 
+            original_image = Image.open('./images/' + turn + '.png')
+        resized_image = original_image.resize((250, 250))  # Replace with your desired dimensions
         self.resized_photo = ImageTk.PhotoImage(resized_image)
 
 
@@ -54,11 +58,10 @@ class TicTacToe:
         if self.onButtonClickedFirstTime:
             for button_rows in self.buttons :
                 for actual_button in button_rows:
-                    button = tk.Button(self.button_frame,image=self.resizeImage('X'), width=250, height=250, command=lambda row=row, col=col: self.on_button_click(row, col))
-                    actual_button = button
-            #         actual_button.config(image=self.resizeImage('X'))
+                    actual_button = tk.Button(self.button_frame,image=self.resizeImage('X'), width=250, height=250, command=lambda row=row, col=col: self.on_button_click(row, col))
+                    actual_button.config(image=self.resizeImage('X'))
                     
-            #         actual_button.config(width=250, height=250)
+                    actual_button.config(width=250, height=250)
             self.onButtonClickedFirstTime = False
         
         self.sign_list[row][col] = self.turn
